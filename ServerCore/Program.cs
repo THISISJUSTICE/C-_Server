@@ -6,52 +6,36 @@ namespace ServerCore
 {
     class Program
     {
-        //메모리 배리어
-        //- 코드 재배치 억제
-        //- 가시성
-        static int x = 0;
-        static int y = 0;
-        static int r1 = 0;
-        static int r2 = 0;
+        static int number = 0;
 
-        static void Thread1()
-        {
-            y = 1; //Store y
+        //atiominc = 원자성(어떤 동작이 한 번에 일어나야 함)
 
-            //-----------------------------
-            Thread.MemoryBarrier(); //멀티 스레드에서만 적용된 값을 커밋하는 역할도 겸함(Store의 커밋)
-            r1 = x; //Load x
+        static void Thread1() {
+            for (int i = 0; i < 1000000; i++) {
+                //All or Nothing
+                int afterval = Interlocked.Increment(ref number); //메모리 배리어도 사용됨, 캐시의 개념이 쓸모 없어짐
+            }
         }
 
         static void Thread2()
         {
-            x = 1; //Store x
-
-            //-----------------------------
-            Thread.MemoryBarrier();
-            r2 = y; //Load y
+            for (int i = 0; i < 1000000; i++) {
+                Interlocked.Decrement(ref number);
+            }
         }
 
         static void Main(string[] args)
         {
-            int count = 0;
-            while (true)
-            {
-                count++;
-                x = y = r1 = r2 = 0;
+            Task t1 = new Task(Thread1);
+            Task t2 = new Task(Thread2);
 
-                Task t1 = new Task(Thread1);
-                Task t2 = new Task(Thread2);
-                t1.Start();
-                t2.Start();
+            t1.Start();
+            t2.Start();
 
-                Task.WaitAll(t1, t2);
+            Task.WaitAll(t1, t2);
 
-                //메모리 배리어를 하지 않으면 코드의 순서가 바뀌는 경우가 있을 수 있어 해당 사항이 나올 수 있음
-                if (r1 == 0 && r2 == 0) break;
-            }
+            Console.WriteLine(number);
 
-            Console.WriteLine($"{count}번 만에 빠져나옴");
         }
     }
 }
