@@ -7,20 +7,49 @@ namespace ServerCore
     class Program
     {
         static int number = 0;
-
-        //atiominc = 원자성(어떤 동작이 한 번에 일어나야 함)
+        static object obj = new object();
 
         static void Thread1() {
             for (int i = 0; i < 1000000; i++) {
-                //All or Nothing
-                int afterval = Interlocked.Increment(ref number); //메모리 배리어도 사용됨, 캐시의 개념이 쓸모 없어짐
+                /*//상호배제 Mutual Exclusive
+                Monitor.Enter(obj); //문을 잠그는 행위
+
+                number++;
+
+                Monitor.Exit(obj); //잠금 해제 (이 부분이 실행되지 않는 경우: 데드락 DeadLock)*/
+
+                //데드락 방지의 한 예시
+                /*try
+                {
+                    Monitor.Enter(obj);
+
+                    number++;
+
+                    return;
+                }
+
+                finally {
+                    Monitor.Exit(obj);
+                }*/
+
+                //try-finally 구문의 단순화
+                lock (obj) {
+                    number++;
+                }
             }
         }
 
         static void Thread2()
         {
             for (int i = 0; i < 1000000; i++) {
-                Interlocked.Decrement(ref number);
+                /*Monitor.Enter(obj);
+                number--;
+                Monitor.Exit(obj);*/
+
+                lock (obj)
+                {
+                    number--;
+                }
             }
         }
 
