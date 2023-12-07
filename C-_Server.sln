@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{1ABDE0D8-4F63-4744-89F7-E5D9A09F6B66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCore", "ServerCore\ServerCore.csproj", "{06ED8AFA-B6C0-4BE7-91A7-500772887ADD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyClient", "DummyClient\DummyClient.csproj", "{18A6D6FD-5582-4102-A750-F28C0B960EE7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1ABDE0D8-4F63-4744-89F7-E5D9A09F6B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ABDE0D8-4F63-4744-89F7-E5D9A09F6B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ABDE0D8-4F63-4744-89F7-E5D9A09F6B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ABDE0D8-4F63-4744-89F7-E5D9A09F6B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06ED8AFA-B6C0-4BE7-91A7-500772887ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06ED8AFA-B6C0-4BE7-91A7-500772887ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06ED8AFA-B6C0-4BE7-91A7-500772887ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06ED8AFA-B6C0-4BE7-91A7-500772887ADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18A6D6FD-5582-4102-A750-F28C0B960EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18A6D6FD-5582-4102-A750-F28C0B960EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18A6D6FD-5582-4102-A750-F28C0B960EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18A6D6FD-5582-4102-A750-F28C0B960EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A20514FA-A89C-46D6-AD3C-1DB6857E750F}
+	EndGlobalSection
+EndGlobal

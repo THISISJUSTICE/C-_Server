@@ -1,0 +1,16 @@
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ServerCore.exe
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ServerCore.deps.json
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ServerCore.runtimeconfig.json
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ServerCore.runtimeconfig.dev.json
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ServerCore.dll
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ref\ServerCore.dll
+C:\Users\yulop\UnityProject\Server\ServerCore\bin\Release\net5.0\ServerCore.pdb
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.AssemblyInfoInputs.cache
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.AssemblyInfo.cs
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.csproj.CoreCompileInputs.cache
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.dll
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ref\ServerCore.dll
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.pdb
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.genruntimeconfig.cache
+C:\Users\yulop\UnityProject\Server\ServerCore\obj\Release\net5.0\ServerCore.csproj.AssemblyReference.cache
