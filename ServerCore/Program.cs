@@ -5,22 +5,21 @@ using System.Threading.Tasks;
 namespace ServerCore
 {
     class Program {
-        static bool stop = false;
-        static void Thread1()
-        {
-            Console.WriteLine("쓰레드 시작");
-            while(!stop){
-
-            }
-            Console.WriteLine("쓰레드 끝");
-        }
-
         static void Main(string[] args)
         {
-            Task t = new Task(Thread1);
-            t.Start();
-            stop = true;
-            //Thread1의 무한 반복이 끝나지 않게 됨
+            int[,] arr = new int[10000, 10000];
+
+            {
+                for (int i = 0; i < 10000; i++)
+                    for (int j = 0; j < 10000; j++) arr[i, j] = 1;
+            }
+
+            // 캐시의 공간 지역성으로 인해 위의 경우가 더 빠름
+
+            {
+                for (int i = 0; i < 10000; i++)
+                    for (int j = 0; j < 10000; j++) arr[j, i] = 1;
+            }
         }
     }
     
