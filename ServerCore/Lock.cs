@@ -46,9 +46,11 @@ namespace ServerCore
                         return;
                     }
                 }
+
+                Thread.Yield();
             }
 
-            Thread.Yield();
+            
         }
 
         public void WriteUnlock()
