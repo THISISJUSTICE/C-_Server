@@ -4,63 +4,70 @@ using System.Threading.Tasks;
 
 namespace ServerCore
 {
-    /*class EventLock
-    {
-        //bool <- 커널
-        AutoResetEvent available_ = new AutoResetEvent(true);
-        //ManualResetEvent available_ = new ManualResetEvent(true);
-
-        public void Acquire()
-        {
-            available_.WaitOne(); //입장 시도
-            //available_.Reset();
-
-        }
-
-        public void Release()
-        {
-            available_.Set();
-        }
-    }*/
-
     class Program
     {
-        static int num = 0;
+        //상호배제
+        //SpinLock (SpinLock과 Context Switching이 혼합된 형태
+        //Mutex
 
-        //int, Thread ID
-        static Mutex lock_ = new Mutex();
+        //불러오기를 할 땐 굳이 락을 하지 않아도 되고, 쓰기가 있을 때 락을 사용
 
-        static void Thread1() {
-            for (int i = 0; i < 100000; i++) {
-                lock_.WaitOne();
-                num++;
-                lock_.ReleaseMutex();
-            }
+        //읽기를 할 땐 상호배제 없이 획득, 쓰기를 할 땐 상호배제
+        static ReaderWriterLockSlim lock3 = new ReaderWriterLockSlim();
+
+        class Reward { 
+
         }
 
-        static void Thread2()
-        {
-            for (int i = 0; i < 100000; i++)
-            {
-                lock_.WaitOne();
-                num--;
-                lock_.ReleaseMutex();
-            }
+        static Reward GetReward(int id) {
+            lock3.EnterReadLock();
+            lock3.ExitReadLock();
+            return null;
         }
+
+        static void AddReward(Reward reward) {
+
+            lock3.EnterWriteLock();
+            lock3.ExitWriteLock();
+
+        }
+
+        static volatile int count;
+        static Lock lock_ = new Lock();
 
         static void Main(string[] args)
         {
+            Task t1 = new Task(delegate ()
+            {
+                for (int i = 0; i < 100000; i++) {
+                    lock_.WriteLock();
+                    lock_.WriteLock();
+                    count++;
+                    lock_.WriteUnlock();
+                    lock_.WriteUnlock();
+                }
+            });
+
+            Task t2 = new Task(delegate ()
+            {
+                for (int i = 0; i < 100000; i++)
+                {
+                    lock_.WriteLock();
+                    count--;
+                    lock_.WriteUnlock();
+                }
+            });
+
             DateTime pre = DateTime.Now;
-            Task t1 = new Task(Thread1);
-            Task t2 = new Task(Thread2);
+
             t1.Start();
             t2.Start();
 
             Task.WaitAll(t1, t2);
             DateTime now = DateTime.Now;
 
+            Console.WriteLine(count);
             TimeSpan executionTime = now - pre;
-            Console.WriteLine(num);
             Console.WriteLine($"걸린 시간: {executionTime.TotalMilliseconds}");
         }
     }
