@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,40 +9,53 @@ namespace ServerCore
 {
     class Program
     {
-        //이 방식을 사용하면 쓰레드에서 쓰기가 사용되면 값이 변경
-        //static string ThreadName;
-
-        //쓰기가 공용되지 않게 됨(쓰레드에서 쓰기가 사용되도 그것은 쓰레드 내부에서만 변경됨)
-        static ThreadLocal<string> ThreadName = new ThreadLocal<string>(() => { return $"My name is {Thread.CurrentThread.ManagedThreadId}"; }); //함수를 매개변수로 주어지면, 해당 부분이 중복되면 실행되지 않음
-
-        static void WhoAmI() {
-            /*ThreadName = $"My name is {Thread.CurrentThread.ManagedThreadId}";
-
-            Thread.Sleep(1000);
-
-            Console.WriteLine(ThreadName);*/
-
-
-           /* ThreadName.Value = $"My name is {Thread.CurrentThread.ManagedThreadId}";
-
-            Thread.Sleep(1000);
-
-            Console.WriteLine(ThreadName.Value);*/
-
-            bool repeat = ThreadName.IsValueCreated;
-            if (repeat)
-                Console.WriteLine(ThreadName.Value + " (repeat)");
-            else 
-                Console.WriteLine(ThreadName.Value);
-        }
-
         static void Main(string[] args)
         {
-            ThreadPool.SetMinThreads(1, 1);
-            ThreadPool.SetMaxThreads(3, 3);
-            Parallel.Invoke(WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI);
+            //DNS
+            string host = Dns.GetHostName();
+            IPHostEntry ipHost = Dns.GetHostEntry(host);
+            IPAddress ipAddr = ipHost.AddressList[0];
+            IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
-            ThreadName.Dispose(); //사용이 끝난 이후 해제
+            //문지기
+            Socket listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            try
+            {
+                //Bind
+                listenSocket.Bind(endPoint);
+
+                //back log: 최대 대기수
+                listenSocket.Listen(10);
+
+                while (true)
+                {
+                    Console.WriteLine("Listening...");
+
+                    //입장
+                    Socket clientSocket = listenSocket.Accept();
+
+                    //수신
+                    byte[] recvBuff = new byte[1024];
+                    int recvBytes = clientSocket.Receive(recvBuff);
+                    string recvData = Encoding.UTF8.GetString(recvBuff, 0, recvBytes);
+                    Console.WriteLine($"[From Client] {recvData}");
+
+                    //송신
+                    byte[] sendBuff = Encoding.UTF8.GetBytes("Welcome to MMORPG Server");
+                    clientSocket.Send(sendBuff);
+
+                    //연결 해제
+                    clientSocket.Shutdown(SocketShutdown.Both);
+                    clientSocket.Close();
+
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.ToString());
+            }
+
+            
         }
     }
 }
