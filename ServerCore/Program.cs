@@ -6,69 +6,40 @@ namespace ServerCore
 {
     class Program
     {
-        //상호배제
-        //SpinLock (SpinLock과 Context Switching이 혼합된 형태
-        //Mutex
+        //이 방식을 사용하면 쓰레드에서 쓰기가 사용되면 값이 변경
+        //static string ThreadName;
 
-        //불러오기를 할 땐 굳이 락을 하지 않아도 되고, 쓰기가 있을 때 락을 사용
+        //쓰기가 공용되지 않게 됨(쓰레드에서 쓰기가 사용되도 그것은 쓰레드 내부에서만 변경됨)
+        static ThreadLocal<string> ThreadName = new ThreadLocal<string>(() => { return $"My name is {Thread.CurrentThread.ManagedThreadId}"; }); //함수를 매개변수로 주어지면, 해당 부분이 중복되면 실행되지 않음
 
-        //읽기를 할 땐 상호배제 없이 획득, 쓰기를 할 땐 상호배제
-        static ReaderWriterLockSlim lock3 = new ReaderWriterLockSlim();
+        static void WhoAmI() {
+            /*ThreadName = $"My name is {Thread.CurrentThread.ManagedThreadId}";
 
-        class Reward { 
+            Thread.Sleep(1000);
 
+            Console.WriteLine(ThreadName);*/
+
+
+           /* ThreadName.Value = $"My name is {Thread.CurrentThread.ManagedThreadId}";
+
+            Thread.Sleep(1000);
+
+            Console.WriteLine(ThreadName.Value);*/
+
+            bool repeat = ThreadName.IsValueCreated;
+            if (repeat)
+                Console.WriteLine(ThreadName.Value + " (repeat)");
+            else 
+                Console.WriteLine(ThreadName.Value);
         }
-
-        static Reward GetReward(int id) {
-            lock3.EnterReadLock();
-            lock3.ExitReadLock();
-            return null;
-        }
-
-        static void AddReward(Reward reward) {
-
-            lock3.EnterWriteLock();
-            lock3.ExitWriteLock();
-
-        }
-
-        static volatile int count;
-        static Lock lock_ = new Lock();
 
         static void Main(string[] args)
         {
-            Task t1 = new Task(delegate ()
-            {
-                for (int i = 0; i < 100000; i++) {
-                    lock_.WriteLock();
-                    lock_.WriteLock();
-                    count++;
-                    lock_.WriteUnlock();
-                    lock_.WriteUnlock();
-                }
-            });
+            ThreadPool.SetMinThreads(1, 1);
+            ThreadPool.SetMaxThreads(3, 3);
+            Parallel.Invoke(WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI, WhoAmI);
 
-            Task t2 = new Task(delegate ()
-            {
-                for (int i = 0; i < 100000; i++)
-                {
-                    lock_.WriteLock();
-                    count--;
-                    lock_.WriteUnlock();
-                }
-            });
-
-            DateTime pre = DateTime.Now;
-
-            t1.Start();
-            t2.Start();
-
-            Task.WaitAll(t1, t2);
-            DateTime now = DateTime.Now;
-
-            Console.WriteLine(count);
-            TimeSpan executionTime = now - pre;
-            Console.WriteLine($"걸린 시간: {executionTime.TotalMilliseconds}");
+            ThreadName.Dispose(); //사용이 끝난 이후 해제
         }
     }
 }
