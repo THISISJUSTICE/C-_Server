@@ -41,6 +41,7 @@ namespace ServerCore
 
         }
 
+        //멀티 스레드로 실행될 수 있다는 점을 염두
         void OnAcceptCompleted(object sender, SocketAsyncEventArgs args) {
             if (args.SocketError == SocketError.Success)
             {
