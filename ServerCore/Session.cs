@@ -19,8 +19,8 @@ namespace ServerCore
         SocketAsyncEventArgs recvArgs = new SocketAsyncEventArgs();
         SocketAsyncEventArgs sendArgs_ = new SocketAsyncEventArgs();
 
-        Queue<byte[]> sendQueue = new Queue<byte[]>();
-        List<ArraySegment<Byte>> pendingList = new List<ArraySegment<byte>>();
+        Queue<ArraySegment<byte>> sendQueue = new Queue<ArraySegment<byte>>();
+        List<ArraySegment<byte>> pendingList = new List<ArraySegment<byte>>();
 
         object lock_ = new object();
 
@@ -38,7 +38,7 @@ namespace ServerCore
         public abstract void OnSend(int numOfBytes);
         public abstract void OnDisconnected(EndPoint endPoint);
 
-        public void Send(byte[] sendBuff) {
+        public void Send(ArraySegment<byte> sendBuff) {
             //socket_.Send(sendBuff);
             //멀티 스레드 환경 대비
             lock (lock_) {
@@ -63,8 +63,8 @@ namespace ServerCore
         void RegisterSend()
         {
             while (sendQueue.Count > 0) {
-                byte[] buff = sendQueue.Dequeue();
-                pendingList.Add(new ArraySegment<byte>(buff, 0, buff.Length));
+                ArraySegment<byte> buff = sendQueue.Dequeue();
+                pendingList.Add(buff);
             }
             sendArgs_.BufferList = pendingList;
 
@@ -124,6 +124,7 @@ namespace ServerCore
                 {
                     //Write 커서 이동
                     if (!recvBuffer.OnWrite(args.BytesTransferred)) {
+                        Console.WriteLine($"OnWrite Failed");
                         DisConnect();
                         return;
                     }
@@ -131,12 +132,14 @@ namespace ServerCore
                     //컨텐츠 쪽으로 데이터를 송신하고 얼마나 처리했는지 수신
                     int processLen = OnRecv(recvBuffer.ReadSegment);
                     if (processLen < 0 || recvBuffer.DataSize < processLen) {
+                        Console.WriteLine($"processLen Failed");
                         DisConnect();
                         return;
                     }
 
                     //Read 커서 이동
                     if (!recvBuffer.OnRead(processLen)) {
+                        Console.WriteLine($"OnRead Failed");
                         DisConnect();
                         return;
                     }

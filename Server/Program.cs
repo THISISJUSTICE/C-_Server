@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -7,14 +8,37 @@ using ServerCore;
 
 namespace ServerCore
 {
+    class Knight {
+        public int hp;
+        public int attack;
+        public string name;
+        public List<int> skiils = new List<int>();
+    }
+
     class GameSession : Session
     {
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"Onconnected : {endPoint}");
 
-            //송신
-            byte[] sendBuff = Encoding.UTF8.GetBytes("Welcome to MMORPG Server");
+            Knight knight = new Knight { hp = 100, attack = 10 };
+            
+            //송신 버퍼를 외부에 위치시키는 이유는 내부에 있으면 같은 내용의 송신 버퍼를 여러 클라에 전송할 경우 복사 시간 발생함
+            /*byte[] sendBuff = new byte[4096];
+            byte[] buffer = BitConverter.GetBytes(knight.hp);
+            byte[] buffer2 = BitConverter.GetBytes(knight.attack);
+            Array.Copy(buffer, 0, sendBuff, 0, buffer.Length);
+            Array.Copy(buffer2, 0, sendBuff, buffer.Length, buffer2.Length);*/
+
+            ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
+            /*byte[] buffer = BitConverter.GetBytes(knight.hp);
+            byte[] buffer2 = BitConverter.GetBytes(knight.attack);*/
+            byte[] buffer = Encoding.UTF8.GetBytes("Welcome to MMORPG Server");
+            Array.Copy(buffer, 0, openSegment.Array, openSegment.Offset, buffer.Length);
+            //Array.Copy(buffer2, 0, openSegment.Array, openSegment.Offset + buffer.Length, buffer2.Length);
+            //ArraySegment<byte> sendBuff = SendBufferHelper.Close(buffer.Length + buffer2.Length);
+            ArraySegment<byte> sendBuff = SendBufferHelper.Close(buffer.Length);
+
             Send(sendBuff);
             Thread.Sleep(1000);
             DisConnect();

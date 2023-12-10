@@ -48,14 +48,14 @@ namespace ServerCore
         }
 
         public bool OnRead(int numOfBytes) {
-            if (numOfBytes < DataSize) return false;
+            if (numOfBytes > DataSize) return false;
 
             readPos_ += numOfBytes;
             return true;
         }
 
         public bool OnWrite(int numOfBytes) {
-            if (numOfBytes < FreeSize) return false;
+            if (numOfBytes > FreeSize) return false;
 
             writePos_ += numOfBytes;
             return true;
