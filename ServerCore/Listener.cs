@@ -8,11 +8,11 @@ namespace ServerCore
     class Listener
     {
         Socket listenSocket;
-        Action<Socket> onAcceptHandler_; //Socket 매개변수 하나를 받는 함수
+        Func<Session> sessionFactory_; //Socket 매개변수 하나를 받는 함수
 
-        public void Init(IPEndPoint endPoint, Action<Socket> onAcceptHandler) { 
+        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory) { 
             listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            onAcceptHandler_ += onAcceptHandler;
+            sessionFactory_ += sessionFactory;
 
             //Bind
             listenSocket.Bind(endPoint);
@@ -45,7 +45,9 @@ namespace ServerCore
         void OnAcceptCompleted(object sender, SocketAsyncEventArgs args) {
             if (args.SocketError == SocketError.Success)
             {
-                onAcceptHandler_.Invoke(args.AcceptSocket);
+                Session session = sessionFactory_.Invoke();
+                session.Start(args.AcceptSocket);
+                session.OnConnected(args.AcceptSocket.RemoteEndPoint);
             }
             else {
                 Console.WriteLine(args.SocketError.ToString());
