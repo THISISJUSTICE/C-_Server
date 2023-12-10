@@ -8,39 +8,30 @@ using ServerCore;
 
 namespace ServerCore
 {
-    class Knight {
-        public int hp;
-        public int attack;
-        public string name;
-        public List<int> skiils = new List<int>();
+    class Packet {
+        public ushort size;
+        public ushort packetID;
+        
     }
 
-    class GameSession : Session
+    class GameSession : PacketSession
     {
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"Onconnected : {endPoint}");
 
-            Knight knight = new Knight { hp = 100, attack = 10 };
-            
-            //송신 버퍼를 외부에 위치시키는 이유는 내부에 있으면 같은 내용의 송신 버퍼를 여러 클라에 전송할 경우 복사 시간 발생함
-            /*byte[] sendBuff = new byte[4096];
-            byte[] buffer = BitConverter.GetBytes(knight.hp);
-            byte[] buffer2 = BitConverter.GetBytes(knight.attack);
-            Array.Copy(buffer, 0, sendBuff, 0, buffer.Length);
-            Array.Copy(buffer2, 0, sendBuff, buffer.Length, buffer2.Length);*/
+            Packet packet = new Packet { size = 4, packetID = 10 };
 
             ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
-            /*byte[] buffer = BitConverter.GetBytes(knight.hp);
-            byte[] buffer2 = BitConverter.GetBytes(knight.attack);*/
-            byte[] buffer = Encoding.UTF8.GetBytes("Welcome to MMORPG Server");
+            byte[] buffer = BitConverter.GetBytes(packet.size);
+            byte[] buffer2 = BitConverter.GetBytes(packet.packetID);
+
             Array.Copy(buffer, 0, openSegment.Array, openSegment.Offset, buffer.Length);
-            //Array.Copy(buffer2, 0, openSegment.Array, openSegment.Offset + buffer.Length, buffer2.Length);
-            //ArraySegment<byte> sendBuff = SendBufferHelper.Close(buffer.Length + buffer2.Length);
-            ArraySegment<byte> sendBuff = SendBufferHelper.Close(buffer.Length);
+            Array.Copy(buffer2, 0, openSegment.Array, openSegment.Offset + buffer.Length, buffer2.Length);
+            ArraySegment<byte> sendBuff = SendBufferHelper.Close(packet.size);
 
             Send(sendBuff);
-            Thread.Sleep(1000);
+            Thread.Sleep(5000);
             DisConnect();
         }
 
@@ -49,11 +40,12 @@ namespace ServerCore
             Console.WriteLine($"OnDisconnected : {endPoint}");
         }
 
-        public override int OnRecv(ArraySegment<byte> buffer)
+        public override void OnRecvPacket(ArraySegment<byte> buffer)
         {
-            string recvData = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, buffer.Count);
-            Console.WriteLine($"[From Client] {recvData}");
-            return buffer.Count;
+            ushort size = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
+            ushort id = BitConverter.ToUInt16(buffer.Array, buffer.Offset + 2);
+
+            Console.WriteLine($"RecvPacket ID: {id}, size: {size}");
         }
 
         public override void OnSend(int numOfBytes)

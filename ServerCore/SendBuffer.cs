@@ -24,7 +24,7 @@ namespace ServerCore
 
         public static ArraySegment<byte> Close(int usedSize)
         {
-            return CurrentBuffer.Value.Open(usedSize);
+            return CurrentBuffer.Value.Close(usedSize);
         }
     }
     public class SendBuffer
