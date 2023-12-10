@@ -5,7 +5,7 @@ using System.Net.Sockets;
 namespace ServerCore
 {
     //비동기 방식의 리스닝
-    class Listener
+    public class Listener
     {
         Socket listenSocket;
         Func<Session> sessionFactory_; //Socket 매개변수 하나를 받는 함수

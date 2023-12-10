@@ -22,11 +22,7 @@ C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.csp
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.dll
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ref\ServerCore.dll
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.pdb
-C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.exe
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.deps.json
-C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.runtimeconfig.json
-C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.runtimeconfig.dev.json
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.dll
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ref\ServerCore.dll
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.pdb
-C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.genruntimeconfig.cache

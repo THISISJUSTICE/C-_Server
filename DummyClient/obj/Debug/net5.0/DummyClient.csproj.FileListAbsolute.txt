@@ -30,3 +30,6 @@ C:\Users\yulop\UnityProject\C-_Server\DummyClient\obj\Debug\net5.0\DummyClient.d
 C:\Users\yulop\UnityProject\C-_Server\DummyClient\obj\Debug\net5.0\ref\DummyClient.dll
 C:\Users\yulop\UnityProject\C-_Server\DummyClient\obj\Debug\net5.0\DummyClient.pdb
 C:\Users\yulop\UnityProject\C-_Server\DummyClient\obj\Debug\net5.0\DummyClient.genruntimeconfig.cache
+C:\Users\yulop\UnityProject\C-_Server\DummyClient\bin\Debug\net5.0\ServerCore.dll
+C:\Users\yulop\UnityProject\C-_Server\DummyClient\bin\Debug\net5.0\ServerCore.pdb
+C:\Users\yulop\UnityProject\C-_Server\DummyClient\obj\Debug\net5.0\DummyClient.csproj.CopyComplete

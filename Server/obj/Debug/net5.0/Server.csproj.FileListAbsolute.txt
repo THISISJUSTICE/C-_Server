@@ -14,3 +14,6 @@ C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\Server.dll
 C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\ref\Server.dll
 C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\Server.pdb
 C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\Server.genruntimeconfig.cache
+C:\Users\yulop\UnityProject\C-_Server\Server\bin\Debug\net5.0\ServerCore.dll
+C:\Users\yulop\UnityProject\C-_Server\Server\bin\Debug\net5.0\ServerCore.pdb
+C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\Server.csproj.CopyComplete
