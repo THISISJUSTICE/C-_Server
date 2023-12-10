@@ -12,22 +12,23 @@ namespace ServerCore
     {
         Socket socket_;
         int disconnected_ = 0;
+        SocketAsyncEventArgs recvArgs = new SocketAsyncEventArgs();
         SocketAsyncEventArgs sendArgs_ = new SocketAsyncEventArgs();
 
         Queue<byte[]> sendQueue = new Queue<byte[]>();
-        bool pending_ = false;
+        List<ArraySegment<Byte>> pendingList = new List<ArraySegment<byte>>();
+
         object lock_ = new object();
 
         public void Start(Socket socket) {
             socket_ = socket;
 
-            SocketAsyncEventArgs recvArgs = new SocketAsyncEventArgs();
             recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
             recvArgs.SetBuffer(new byte[1024], 0, 1024);
 
             sendArgs_.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
-            RegisterRecv(recvArgs);
+            RegisterRecv();
         }
 
         public void Send(byte[] sendBuff) {
@@ -35,7 +36,7 @@ namespace ServerCore
             //멀티 스레드 환경 대비
             lock (lock_) {
                 sendQueue.Enqueue(sendBuff);
-                if (!pending_) RegisterSend();
+                if (pendingList.Count == 0) RegisterSend();
             }
 
         }
@@ -53,9 +54,11 @@ namespace ServerCore
         #region 네트워크 통신
         void RegisterSend()
         {
-            pending_ = true;
-            byte[] buff = sendQueue.Dequeue();
-            sendArgs_.SetBuffer(buff, 0, buff.Length);
+            while (sendQueue.Count > 0) {
+                byte[] buff = sendQueue.Dequeue();
+                pendingList.Add(new ArraySegment<byte>(buff, 0, buff.Length));
+            }
+            sendArgs_.BufferList = pendingList;
 
             bool pending = socket_.SendAsync(sendArgs_);
             if (!pending)
@@ -70,13 +73,16 @@ namespace ServerCore
                 {
                     try
                     {
+                        sendArgs_.BufferList = null;
+                        pendingList.Clear();
+
+                        Console.WriteLine($"Transferred bytes: {sendArgs_.BytesTransferred}");
+
                         //송신할 패킷이 남아있으면, 모두 송신할 때까지 전송
                         if (sendQueue.Count > 0) {
                             RegisterSend();
                         }
-                        //모든 패킷을 송신하면 pending_을 false로 하여 대기
-                        else
-                            pending_ = false;
+                        
                     }
                     catch (Exception e)
                     {
@@ -90,10 +96,10 @@ namespace ServerCore
             }
         }
 
-        void RegisterRecv(SocketAsyncEventArgs args) {
-            bool pending = socket_.ReceiveAsync(args);
+        void RegisterRecv() {
+            bool pending = socket_.ReceiveAsync(recvArgs);
             if (!pending) {
-                OnRecvCompleted(null, args);
+                OnRecvCompleted(null, recvArgs);
             }
         }
 
@@ -102,11 +108,10 @@ namespace ServerCore
             {
                 try
                 {
-                    pending_ = false;
                     string recvData = Encoding.UTF8.GetString(args.Buffer, args.Offset, args.BytesTransferred);
                     Console.WriteLine($"[From Client] {recvData}");
 
-                    RegisterRecv(args);
+                    RegisterRecv();
                 }
                 catch(Exception e) {
                     Console.WriteLine($"OnRecvCompleted Failed: {e}");
