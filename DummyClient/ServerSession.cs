@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using ServerCore;
@@ -19,6 +20,35 @@ namespace DummyClient
         public long playerID;
         public string name;
 
+        public struct SkilInfo {
+            public int id;
+            public short level;
+            public float duration;
+
+            public bool Write(Span<byte> s, ref ushort count) {
+                bool success = true;
+                success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), id);
+                count += sizeof(int);
+                success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), level);
+                count += sizeof(short);
+                success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), duration);
+                count += sizeof(float);
+
+                return success;
+            }
+
+            public void Read(ReadOnlySpan<byte> s, ref ushort count) {
+                id = BitConverter.ToInt32(s.Slice(count, s.Length - count));
+                count += sizeof(int);
+                level = BitConverter.ToInt16(s.Slice(count, s.Length - count));
+                count += sizeof(short);
+                duration = BitConverter.ToSingle(s.Slice(count, s.Length - count));
+                count += sizeof(float);
+            }
+        }
+
+        public List<SkilInfo> skills = new List<SkilInfo>();
+
         public PlayerInfoReq() {
             packetID = (ushort)PacketID.PlayerInfoReq;
         }
@@ -36,9 +66,21 @@ namespace DummyClient
 
             //string
             ushort nameLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
-            count += sizeof(short);
+            count += sizeof(ushort);
 
             name = Encoding.Unicode.GetString(s.Slice(count, nameLen));
+            count += nameLen;
+
+            //skill List
+            skills.Clear();
+            ushort skillLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+            count += sizeof(ushort);
+            for (int i = 0; i < skillLen; i++) {
+                SkilInfo skill = new SkilInfo();
+                skill.Read(s, ref count);
+                skills.Add(skill);
+            }
+
 
         }
 
@@ -58,17 +100,18 @@ namespace DummyClient
             success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), playerID);
             count += sizeof(long);
 
-            //string
-            /*ushort nameLen = (ushort)Encoding.Unicode.GetByteCount(name);
-            success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), nameLen);
-            count += sizeof(ushort);
-            Array.Copy(Encoding.Unicode.GetBytes(name), 0, segment.Array, count, nameLen);
-            count += nameLen;*/
-
             ushort nameLen = (ushort)Encoding.Unicode.GetBytes(name, 0, name.Length, segment.Array, segment.Offset + count + sizeof(ushort));
             success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), nameLen);
             count += sizeof(ushort);
             count += nameLen;
+
+            //skill List
+            success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)skills.Count);
+            count += sizeof(ushort);
+
+            foreach (SkilInfo skill in skills) {
+                success &= skill.Write(s, ref count);
+            }
 
             success &= BitConverter.TryWriteBytes(s, count);
 
@@ -90,6 +133,10 @@ namespace DummyClient
             Console.WriteLine($"Onconnected : {endPoint}");
 
             PlayerInfoReq packet = new PlayerInfoReq {playerID = 1001, name = "ABCD" };
+            packet.skills.Add(new PlayerInfoReq.SkilInfo() { id = 101, level = 1, duration = 3.0f });
+            packet.skills.Add(new PlayerInfoReq.SkilInfo() { id = 201, level = 2, duration = 4.0f });
+            packet.skills.Add(new PlayerInfoReq.SkilInfo() { id = 301, level = 3, duration = 5.0f });
+            packet.skills.Add(new PlayerInfoReq.SkilInfo() { id = 401, level = 4, duration = 6.0f });
 
             //송신
             //for (int i = 0; i < 5; i++)
