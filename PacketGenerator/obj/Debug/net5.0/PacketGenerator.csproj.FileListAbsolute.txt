@@ -14,3 +14,10 @@ C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGen
 C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\ref\PacketGenerator.dll
 C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.pdb
 C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.genruntimeconfig.cache
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\PacketGenerator.exe
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\PacketGenerator.deps.json
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\PacketGenerator.runtimeconfig.json
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\PacketGenerator.runtimeconfig.dev.json
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\PacketGenerator.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\ref\PacketGenerator.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\net5.0\PacketGenerator.pdb

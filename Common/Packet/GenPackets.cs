@@ -17,13 +17,13 @@ class PlayerInfoReq {
 	public long playerID;
 	public string name;
 	
-	public struct Skill
+	public class Skill
 	{
 	    public int id;
 		public short level;
 		public float duration;
 		
-		public struct Attribute
+		public class Attribute
 		{
 		    public int att;
 		
