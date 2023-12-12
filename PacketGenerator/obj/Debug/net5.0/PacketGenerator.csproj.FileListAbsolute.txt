@@ -1,0 +1,16 @@
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\PacketGenerator.exe
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\PacketGenerator.deps.json
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\PacketGenerator.runtimeconfig.json
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\PacketGenerator.runtimeconfig.dev.json
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\PacketGenerator.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\ref\PacketGenerator.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Debug\net5.0\PacketGenerator.pdb
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.csproj.AssemblyReference.cache
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.AssemblyInfoInputs.cache
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.AssemblyInfo.cs
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.csproj.CoreCompileInputs.cache
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\ref\PacketGenerator.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.pdb
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\net5.0\PacketGenerator.genruntimeconfig.cache
