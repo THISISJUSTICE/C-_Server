@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using System.Threading;
 using ServerCore;
 
@@ -18,6 +19,7 @@ namespace Server
     class PlayerInfoReq : Packet
     {
         public long playerID;
+        public string name;
 
         public PlayerInfoReq()
         {
@@ -26,32 +28,48 @@ namespace Server
 
         public override void Read(ArraySegment<byte> segment)
         {
+            ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
             ushort count = 0;
-            //ushort size = BitConverter.ToUInt16(segment.Array, segment.Offset);
-            count += 2;
-            //ushort id = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-            count += 2;
-            playerID = BitConverter.ToUInt16(new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count - count));
-            count += 8;
+            count += sizeof(ushort);
+            count += sizeof(ushort);
+            //패킷의 사이즈를 틀리게 입력해도 데이터를 받는 일이 생기지 않게 함
+            playerID = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+            count += sizeof(long);
+
+            //string
+            ushort nameLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+            count += sizeof(short);
+
+            name = Encoding.Unicode.GetString(s.Slice(count, nameLen));
 
         }
 
         public override ArraySegment<byte> Write()
         {
-            ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
+            ArraySegment<byte> segment = SendBufferHelper.Open(4096);
 
 
             bool success = true;
             ushort count = 0;
 
-            count += 2;
-            success &= BitConverter.TryWriteBytes(new Span<byte>(openSegment.Array, openSegment.Offset + count, openSegment.Count - count), packetID);
-            count += 2;
-            success &= BitConverter.TryWriteBytes(new Span<byte>(openSegment.Array, openSegment.Offset + count, openSegment.Count - count), playerID);
-            count += 8;
+            Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
 
-            //패킷의 사이즈는 마지막에 계산해줘야 알 수 있기에 마지막에 입력
-            success &= BitConverter.TryWriteBytes(new Span<byte>(openSegment.Array, openSegment.Offset, openSegment.Count), count);
+            count += sizeof(ushort);
+            success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), packetID);
+            count += sizeof(ushort);
+            success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), playerID);
+            count += sizeof(long);
+
+            //string
+            ushort nameLen = (ushort)Encoding.Unicode.GetByteCount(name);
+            success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), nameLen);
+            count += sizeof(ushort);
+
+            Array.Copy(Encoding.Unicode.GetBytes(name), 0, segment.Array, count, nameLen);
+            count += nameLen;
+
+            success &= BitConverter.TryWriteBytes(s, count);
 
             if (!success) return null;
 
@@ -99,14 +117,14 @@ namespace Server
             ushort id = BitConverter.ToUInt16(buffer.Array, buffer.Offset + count);
             count += 2;
 
-            Console.WriteLine($"[From Server] RecvPacket ID: {id}, size: {size}");
+            Console.WriteLine($"[From Client] RecvPacket ID: {id}, size: {size}");
 
             switch ((PacketID)id) {
                 case PacketID.PlayerInfoReq:
                     {
                         PlayerInfoReq p = new PlayerInfoReq();
                         p.Read(buffer);
-                        Console.WriteLine($"[From Server] Player ID: {p.playerID}");
+                        Console.WriteLine($"[From Client] Player ID: {p.playerID}, {p.name}");
                     }
                     break;
                 case PacketID.PlayerInfoOK:
