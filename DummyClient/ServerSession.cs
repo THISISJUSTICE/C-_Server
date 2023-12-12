@@ -6,16 +6,48 @@ using ServerCore;
 
 namespace DummyClient
 {
+	public enum PacketID
+	{
+		PlayerInfoReq = 1,
+		Test = 2,
+
+	}
 
 	class PlayerInfoReq
 	{
+		public byte testByte;
 		public long playerID;
 		public string name;
-		public struct Skill
+
+		public class Skill
 		{
 			public int id;
 			public short level;
 			public float duration;
+
+			public class Attribute
+			{
+				public int att;
+
+				public void Read(ReadOnlySpan<byte> s, ref ushort count)
+				{
+					this.att = BitConverter.ToInt32(s.Slice(count, s.Length - count));
+					count += sizeof(int);
+
+				}
+
+				public bool Write(Span<byte> s, ref ushort count)
+				{
+					bool success = true;
+					success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), att);
+					count += sizeof(int);
+
+					return success;
+				}
+			}
+
+			public List<Attribute> attributes = new List<Attribute>();
+
 
 			public void Read(ReadOnlySpan<byte> s, ref ushort count)
 			{
@@ -27,6 +59,16 @@ namespace DummyClient
 
 				this.duration = BitConverter.ToSingle(s.Slice(count, s.Length - count));
 				count += sizeof(float);
+
+				this.attributes.Clear();
+				ushort attributeLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+				count += sizeof(ushort);
+				for (int i = 0; i < attributeLen; i++)
+				{
+					Attribute attribute = new Attribute();
+					attribute.Read(s, ref count);
+					attributes.Add(attribute);
+				}
 
 			}
 
@@ -42,6 +84,15 @@ namespace DummyClient
 				success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), duration);
 				count += sizeof(float);
 
+				success &= BitConverter.TryWriteBytes(s, count);
+				success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)attributes.Count);
+				count += sizeof(ushort);
+
+				foreach (Attribute attribute in attributes)
+				{
+					success &= attribute.Write(s, ref count);
+				}
+
 				return success;
 			}
 		}
@@ -56,6 +107,9 @@ namespace DummyClient
 			ushort count = 0;
 			count += sizeof(ushort);
 			count += sizeof(ushort);
+			testByte = (byte)segment.Array[segment.Offset + count];
+			count += sizeof(byte);
+
 			this.playerID = BitConverter.ToInt32(s.Slice(count, s.Length - count));
 			count += sizeof(long);
 
@@ -88,6 +142,9 @@ namespace DummyClient
 			success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.PlayerInfoReq);
 			count += sizeof(ushort);
 
+			segment.Array[segment.Offset + count] = (byte)testByte;
+			count += sizeof(byte);
+
 			success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), playerID);
 			count += sizeof(long);
 
@@ -111,13 +168,7 @@ namespace DummyClient
 		}
 	}
 
-
-	public enum PacketID {
-        PlayerInfoReq = 1,
-        PlayerInfoOK = 2
-    }
-
-    class ServerSession : PacketSession
+	class ServerSession : PacketSession
     {
         public override void OnConnected(EndPoint endPoint)
         {
