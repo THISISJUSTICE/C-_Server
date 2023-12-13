@@ -16,7 +16,7 @@ namespace Server
         {
             Console.WriteLine($"Onconnected : {endPoint}");
 
-            Program.room.Enter(this);
+            Program.room.Push(() => Program.room.Enter(this));
             
         }
 
@@ -24,7 +24,8 @@ namespace Server
         {
             SessionManager.Inst.Remove(this);
             if (room != null) {
-                room.Leave(this);
+                GameRoom room_ = room;
+                room_.Push(() => room_.Leave(this));
                 room = null;
             }
 
