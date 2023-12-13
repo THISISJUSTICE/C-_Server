@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading;
 using ServerCore;
 
 namespace Server
@@ -20,7 +21,8 @@ namespace Server
 
             while (true)
             {
-
+                room.Push(() => room.Flush());
+                Thread.Sleep(250);
             }
         }
     }

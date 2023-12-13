@@ -20,9 +20,9 @@ namespace DummyClient
                     C_Chat chatPacket = new C_Chat();
                     chatPacket.chat = $"Hello Server!";
                     ArraySegment<byte> segment = chatPacket.Write();
-
                     s.Send(segment);
                 }
+                
             }
         }
 

@@ -16,6 +16,7 @@ namespace ServerCore
         public sealed override int OnRecv(ArraySegment<byte> buffer)
         {
             int processLen = 0;
+            int packetCount = 0;
 
             while (true) {
                 //최소한 헤더는 파싱할 수 있는지 확인
@@ -29,13 +30,18 @@ namespace ServerCore
 
                 //패킷 조립 가능
                 OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
+                packetCount++;
 
                 processLen += dataSize;
                 buffer = new ArraySegment<byte>(buffer.Array, buffer.Offset + dataSize, buffer.Count - dataSize);
             }
 
+            Temp(packetCount);
+
             return processLen;
         }
+
+        public abstract void Temp(int packetCount);
 
         public abstract void OnRecvPacket(ArraySegment<byte> buffer);
     }
@@ -45,7 +51,7 @@ namespace ServerCore
         Socket socket_;
         int disconnected_ = 0;
 
-        RecvBuffer recvBuffer = new RecvBuffer(1024);
+        RecvBuffer recvBuffer = new RecvBuffer(65535);
 
         SocketAsyncEventArgs recvArgs = new SocketAsyncEventArgs();
         SocketAsyncEventArgs sendArgs_ = new SocketAsyncEventArgs();
@@ -76,11 +82,23 @@ namespace ServerCore
             }
         }
 
-        public void Send(ArraySegment<byte> sendBuff) {
-            //socket_.Send(sendBuff);
-            //멀티 스레드 환경 대비
-            lock (lock_) {
+        public void Send(ArraySegment<byte> sendBuff)
+        {
+            lock (lock_)
+            {
                 sendQueue.Enqueue(sendBuff);
+                if (pendingList.Count == 0) RegisterSend();
+            }
+
+        }
+
+        public void Send(List<ArraySegment<byte>> sendBuffList) {
+            if (sendBuffList.Count == 0) return;
+
+            lock (lock_) {
+                foreach (ArraySegment<byte> sendBuff in sendBuffList) {
+                    sendQueue.Enqueue(sendBuff);
+                }                
                 if (pendingList.Count == 0) RegisterSend();
             }
 
