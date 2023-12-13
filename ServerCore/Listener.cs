@@ -10,7 +10,7 @@ namespace ServerCore
         Socket listenSocket;
         Func<Session> sessionFactory_; //Socket 매개변수 하나를 받는 함수
 
-        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory) { 
+        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory, int register = 10, int backlog = 100) { 
             listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             sessionFactory_ += sessionFactory;
 
@@ -18,13 +18,17 @@ namespace ServerCore
             listenSocket.Bind(endPoint);
 
             //back log: 최대 대기수
-            listenSocket.Listen(10);
+            listenSocket.Listen(backlog);
 
-            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-            //소켓을 수신받으면 이벤트를 발생시켜 해당 함수 실행
-            args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
-            //최초 리스닝 시작
-            RegisterAccept(args);
+            for(int i=0; i<register; i++)
+            {
+                SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+                //소켓을 수신받으면 이벤트를 발생시켜 해당 함수 실행
+                args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+                //최초 리스닝 시작
+                RegisterAccept(args);
+
+            }
         }
 
         void RegisterAccept(SocketAsyncEventArgs args) {
