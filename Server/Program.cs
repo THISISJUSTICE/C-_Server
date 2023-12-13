@@ -10,8 +10,6 @@ namespace Server
 
         static void Main(string[] args)
         {
-            PacketManager.Inst.Register();
-
             //DNS
             string host = Dns.GetHostName();
             IPHostEntry ipHost = Dns.GetHostEntry(host);

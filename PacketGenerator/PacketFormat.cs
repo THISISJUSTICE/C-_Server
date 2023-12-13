@@ -17,17 +17,13 @@ using ServerCore;
 class PacketManager
 {{
     #region Singleton
-    static PacketManager instance_;
-    public static PacketManager Inst
-    {{
-        get {{
-            if (instance_ == null) {{
-                instance_ = new PacketManager();
-            }}
-            return instance_;
-        }}
-    }}
+    static PacketManager instance_ = new PacketManager();
+    public static PacketManager Inst {{ get {{return instance_;}} }}
     #endregion
+
+    PacketManager() {{
+        Register();
+    }}
 
     Dictionary<ushort, Action<PacketSession, ArraySegment<byte>>> onRecv = new Dictionary<ushort, Action<PacketSession, ArraySegment<byte>>>();
     Dictionary<ushort, Action<PacketSession, IPacket>> handler_ = new Dictionary<ushort, Action<PacketSession, IPacket>>();
