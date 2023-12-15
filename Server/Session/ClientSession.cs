@@ -41,10 +41,5 @@ namespace Server
         {
             //Console.WriteLine($"Transferred bytes: {numOfBytes}");
         }
-
-        public override void Temp(int packetCount)
-        {
-            
-        }
     }
 }

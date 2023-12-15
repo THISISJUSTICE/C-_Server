@@ -30,10 +30,5 @@ namespace DummyClient
         {
             //Console.WriteLine($"Transferred bytes: {numOfBytes}");
         }
-
-        public override void Temp(int packetCount)
-        {
-            if (packetCount > 0) Console.WriteLine($"패킷 모아보내기 : {packetCount}");
-        }
     }
 }

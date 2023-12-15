@@ -36,12 +36,8 @@ namespace ServerCore
                 buffer = new ArraySegment<byte>(buffer.Array, buffer.Offset + dataSize, buffer.Count - dataSize);
             }
 
-            Temp(packetCount);
-
             return processLen;
         }
-
-        public abstract void Temp(int packetCount);
 
         public abstract void OnRecvPacket(ArraySegment<byte> buffer);
     }
