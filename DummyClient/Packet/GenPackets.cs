@@ -12,7 +12,7 @@ public enum PacketID
 	
 }
 
-interface IPacket {
+public interface IPacket {
 	ushort Protocol { get; }
 	public void Read(ArraySegment<byte> segment);
 	public ArraySegment<byte> Write();
