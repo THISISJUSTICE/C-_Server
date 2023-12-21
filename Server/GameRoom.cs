@@ -22,28 +22,67 @@ namespace Server
             {
                 cs.Send(pendingList);
             }
-            Console.WriteLine($"Flushed {pendingList.Count} itmes");
+            //Console.WriteLine($"Flushed {pendingList.Count} itmes");
             pendingList.Clear();
         }
 
-        public void BroadCast(ClientSession session, string chat) {
-            S_Chat packet = new S_Chat();
-
-            packet.playerID = session.sessionID;
-            packet.chat = $"{chat}, I am {packet.playerID}!";
-
-            ArraySegment<byte> segment = packet.Write();
+        public void BroadCast(ArraySegment<byte> segment) {
             pendingList.Add(segment);
         }
 
+        //플레이어 추가
         public void Enter(ClientSession session) {
+            
             sessions_.Add(session);
             session.room = this;
+
+            //플레이어 목록 전송
+            S_PlayerList players = new S_PlayerList();
+            foreach (ClientSession s in sessions_) {
+                players.players.Add(new S_PlayerList.Player()
+                {
+                    isSelf = (s == session),
+                    posX = s.PosX,
+                    posY = s.PosY,
+                    posZ = s.PosZ,
+
+                }) ;
+            }
+            session.Send(players.Write());
+
+            //플레이어 입장을 브로드캐스트
+            S_BroadCastEnterGame enter = new S_BroadCastEnterGame();
+            enter.playerID = session.sessionID;
+            enter.posX = 0;
+            enter.posY = 0;
+            enter.posZ = 0;
+            BroadCast(enter.Write());
         }
 
+        //플레이어 제거
         public void Leave(ClientSession session)
         {
             sessions_.Remove(session);
+
+            //브로드 캐스트
+            S_BroadCastLeaveGame leave = new S_BroadCastLeaveGame();
+            leave.playerID = session.sessionID;
+            BroadCast(leave.Write());
+        }
+
+        public void Move(ClientSession session, C_Move packet) {
+            //좌표를 바꾸기
+            session.PosX = packet.posX;
+            session.PosY = packet.posY;
+            session.PosY = packet.posZ;
+
+            //브로드 캐스팅
+            S_BroadCastMove move = new S_BroadCastMove();
+            move.playerID = session.sessionID;
+            move.posX = session.PosX;
+            move.posY = session.PosY;
+            move.posZ = session.PosZ;
+            BroadCast(move.Write());
         }
 
     }

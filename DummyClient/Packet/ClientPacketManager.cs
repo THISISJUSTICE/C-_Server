@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ServerCore;
 
-class PacketManager
+public class PacketManager
 {
     #region Singleton
     static PacketManager instance_ = new PacketManager();
@@ -15,10 +15,18 @@ class PacketManager
     Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>> makeFunc_ = new Dictionary<ushort, Func<PacketSession, ArraySegment<byte>, IPacket>>();
     Dictionary<ushort, Action<PacketSession, IPacket>> handler_ = new Dictionary<ushort, Action<PacketSession, IPacket>>();
 
-    public void Register() {
+    public void Register() {      
+        makeFunc_.Add((ushort)PacketID.S_BroadCastEnterGame, MakePacket<S_BroadCastEnterGame>);
+        handler_.Add((ushort)PacketID.S_BroadCastEnterGame, PacketHandler.S_BroadCastEnterGameHandler);
       
-        makeFunc_.Add((ushort)PacketID.S_Chat, MakePacket<S_Chat>);
-        handler_.Add((ushort)PacketID.S_Chat, PacketHandler.S_ChatHandler);
+        makeFunc_.Add((ushort)PacketID.S_BroadCastLeaveGame, MakePacket<S_BroadCastLeaveGame>);
+        handler_.Add((ushort)PacketID.S_BroadCastLeaveGame, PacketHandler.S_BroadCastLeaveGameHandler);
+      
+        makeFunc_.Add((ushort)PacketID.S_PlayerList, MakePacket<S_PlayerList>);
+        handler_.Add((ushort)PacketID.S_PlayerList, PacketHandler.S_PlayerListHandler);
+      
+        makeFunc_.Add((ushort)PacketID.S_BroadCastMove, MakePacket<S_BroadCastMove>);
+        handler_.Add((ushort)PacketID.S_BroadCastMove, PacketHandler.S_BroadCastMoveHandler);
 
     }
 
