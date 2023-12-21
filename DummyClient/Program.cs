@@ -18,7 +18,7 @@ namespace DummyClient
 
             Connector connector = new Connector();
 
-            connector.Connect(endPoint, () => { return SessionManager.Inst.Generate(); }, 10);
+            connector.Connect(endPoint, () => { return SessionManager.Inst.Generate(); }, 500);
 
             while(true){
 

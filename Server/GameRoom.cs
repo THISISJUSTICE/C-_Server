@@ -42,6 +42,7 @@ namespace Server
                 players.players.Add(new S_PlayerList.Player()
                 {
                     isSelf = (s == session),
+                    playerID = s.sessionID,
                     posX = s.PosX,
                     posY = s.PosY,
                     posZ = s.PosZ,
@@ -74,7 +75,7 @@ namespace Server
             //좌표를 바꾸기
             session.PosX = packet.posX;
             session.PosY = packet.posY;
-            session.PosY = packet.posZ;
+            session.PosZ = packet.posZ;
 
             //브로드 캐스팅
             S_BroadCastMove move = new S_BroadCastMove();
