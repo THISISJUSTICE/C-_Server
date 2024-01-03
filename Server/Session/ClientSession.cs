@@ -15,6 +15,21 @@ namespace Server
     {
         public int sessionID { get; set; }
 
+        public void Send(IMessage packet)
+        {
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];
+            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+
+            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+            MsgId msgID = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+            Array.Copy(BitConverter.GetBytes((ushort)msgID), 0, sendBuffer, 2, sizeof(ushort));
+
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+
+            Send(new ArraySegment<byte>(sendBuffer));
+        }
+
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"Onconnected : {endPoint}");
@@ -24,16 +39,7 @@ namespace Server
                 Context = "안녕하세요"
             };
 
-            ushort size = (ushort)chat.CalculateSize();
-            byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
-            ushort protocolID = (ushort)MsgId.SChat;
-            Array.Copy(BitConverter.GetBytes(protocolID), 0, sendBuffer, 2, sizeof(ushort));
-            Array.Copy(chat.ToByteArray(), 0, sendBuffer, 4, size);
-            
-            Send(new ArraySegment<byte>(sendBuffer));
-            //Program.room.Push(() => Program.room.Enter(this));
-
+            Send(chat);
         }
 
         public override void OnDisconnected(EndPoint endPoint)
