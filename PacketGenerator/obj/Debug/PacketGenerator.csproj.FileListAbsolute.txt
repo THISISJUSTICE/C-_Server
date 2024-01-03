@@ -14,3 +14,5 @@ C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\PacketGenerator.
 C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\ref\PacketGenerator.dll
 C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\PacketGenerator.pdb
 C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\PacketGenerator.genruntimeconfig.cache
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\bin\Google.Protobuf.dll
+C:\Users\yulop\UnityProject\C-_Server\PacketGenerator\obj\Debug\PacketGenerator.csproj.CopyComplete

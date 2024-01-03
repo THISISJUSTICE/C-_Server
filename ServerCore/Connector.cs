@@ -10,13 +10,13 @@ namespace ServerCore
 {
     public class Connector
     {
-        Func<Session> sessionFactory_;
+        Func<Session> _sessionFactory;
 
         public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, int count = 1) {
             for (int i = 0; i < count; i++)
             {
                 Socket socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                sessionFactory_ = sessionFactory;
+                _sessionFactory = sessionFactory;
 
                 SocketAsyncEventArgs args = new SocketAsyncEventArgs();
                 args.Completed += OnConnectedCompleted;
@@ -40,7 +40,7 @@ namespace ServerCore
         void OnConnectedCompleted(object sender, SocketAsyncEventArgs args) {
             if (args.SocketError == SocketError.Success)
             {
-                Session session = sessionFactory_.Invoke();
+                Session session = _sessionFactory.Invoke();
                 session.Start(args.ConnectSocket);
                 session.OnConnected(args.RemoteEndPoint);
             }

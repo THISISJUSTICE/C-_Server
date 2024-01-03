@@ -11,19 +11,19 @@ namespace Server
         static SessionManager session_ = new SessionManager();
         public static SessionManager Inst { get { return session_; } }
 
-        int sessionID_ = 0;
+        int _sessionID = 0;
 
-        Dictionary<int, ClientSession> sessions_ = new Dictionary<int, ClientSession>();
+        Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
 
         object lock_ = new object();
 
         public ClientSession Generate() {
             lock (lock_)
             {
-                int sessionID = ++sessionID_;
+                int sessionID = ++_sessionID;
                 ClientSession session = new ClientSession();
                 session.sessionID = sessionID;
-                sessions_.Add(sessionID, session);
+                _sessions.Add(sessionID, session);
 
                 Console.WriteLine($"Connected : {sessionID}");
                 return session;
@@ -34,14 +34,14 @@ namespace Server
         public ClientSession Find(int id) {
             lock (lock_) {
                 ClientSession session = null;
-                sessions_.TryGetValue(id, out session);
+                _sessions.TryGetValue(id, out session);
                 return session;
             }
         }
 
         public void Remove(ClientSession session) {
             lock (lock_) {
-                sessions_.Remove(session.sessionID);
+                _sessions.Remove(session.sessionID);
             }
         }
 

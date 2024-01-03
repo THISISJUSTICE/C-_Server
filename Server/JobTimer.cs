@@ -20,8 +20,8 @@ namespace Server
     }
     class JobTimer
     {
-        PriorityQueue<JoTimerElem> pq_ = new PriorityQueue<JoTimerElem>();
-        object lock_ = new object();
+        PriorityQueue<JoTimerElem> _pq = new PriorityQueue<JoTimerElem>();
+        object _lock = new object();
 
         public static JobTimer Inst { get; } = new JobTimer();
 
@@ -30,8 +30,8 @@ namespace Server
             job.execTick = System.Environment.TickCount + tickAfter;
             job.action = action;
 
-            lock (lock_) {
-                pq_.Push(job);
+            lock (_lock) {
+                _pq.Push(job);
             }
         }
 
@@ -41,13 +41,13 @@ namespace Server
 
                 JoTimerElem job;
 
-                lock (lock_) {
-                    if (pq_.Count == 0) break;
+                lock (_lock) {
+                    if (_pq.Count == 0) break;
 
-                    job = pq_.Peek();
+                    job = _pq.Peek();
                     if (job.execTick > now) break;
 
-                    pq_.Pop();
+                    _pq.Pop();
                 }
 
                 job.action.Invoke();

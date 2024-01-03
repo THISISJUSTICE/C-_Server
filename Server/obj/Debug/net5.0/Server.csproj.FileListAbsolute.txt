@@ -17,3 +17,4 @@ C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\Server.genruntimec
 C:\Users\yulop\UnityProject\C-_Server\Server\bin\Debug\net5.0\ServerCore.dll
 C:\Users\yulop\UnityProject\C-_Server\Server\bin\Debug\net5.0\ServerCore.pdb
 C:\Users\yulop\UnityProject\C-_Server\Server\obj\Debug\net5.0\Server.csproj.CopyComplete
+C:\Users\yulop\UnityProject\C-_Server\Server\bin\Debug\net5.0\Google.Protobuf.dll

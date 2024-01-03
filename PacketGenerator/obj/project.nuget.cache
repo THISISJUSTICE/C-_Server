@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "zH4OruVP4bmBtn9N8wyI0Yr4ZcxnMIi+DdgCKVgBRNyyv2o73VhJowpdaDlNXAZr1JZiDDJJmBHOSiTWGkhQ3w==",
+  "dgSpecHash": "7m9Yfn0XVr0hjFe85jH2rv6OYqMcLfosuutd9ObGFZ/GIkWRUgeRM9576NKWSXM6pOkhQsq9uVf3yLFQtjXjOg==",
   "success": true,
   "projectFilePath": "C:\\Users\\yulop\\UnityProject\\C-_Server\\PacketGenerator\\PacketGenerator.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\yulop\\.nuget\\packages\\google.protobuf\\3.25.1\\google.protobuf.3.25.1.nupkg.sha512"
+  ],
   "logs": []
 }
