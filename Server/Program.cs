@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using ServerCore;
+using Server.Game;
 
 namespace Server
 {
@@ -13,6 +14,8 @@ namespace Server
         }
         static void Main(string[] args)
         {
+            RoomManager.Instance.Add();
+
             //DNS
             string host = Dns.GetHostName();
             IPHostEntry ipHost = Dns.GetHostEntry(host);

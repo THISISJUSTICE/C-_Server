@@ -1,26 +1,29 @@
+using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using ServerCore;
 using System;
 using System.Collections.Generic;
-using Google.Protobuf;
-using Google.Protobuf.Examples.AddressBook;
-using ServerCore;
 
-public class PacketManager
+class PacketManager
 {
-    #region Singleton
-    static PacketManager instance_ = new PacketManager();
-    public static PacketManager Inst { get {return instance_;} }
-    #endregion
+	#region Singleton
+	static PacketManager _instance = new PacketManager();
+	public static PacketManager Instance { get { return _instance; } }
+	#endregion
 
-    PacketManager() {
-        Register();
-    }
-    Dictionary<ushort, Action<PacketSession, ArraySegment<byte>, ushort>> _onRecv = new Dictionary<ushort, Action<PacketSession, ArraySegment<byte>, ushort>>();
-    Dictionary<ushort, Action<PacketSession, IMessage>> _handler = new Dictionary<ushort, Action<PacketSession, IMessage>>();
+	PacketManager()
+	{
+		Register();
+	}
 
-    public void Register() {
-        _onRecv.Add((ushort)MsgID.CChat, MakePacket<C_Chat>);
-        _handler.Add((ushort)MsgID.CChat, PacketHandler.C_ChatHandler);
-    }
+	Dictionary<ushort, Action<PacketSession, ArraySegment<byte>, ushort>> _onRecv = new Dictionary<ushort, Action<PacketSession, ArraySegment<byte>, ushort>>();
+	Dictionary<ushort, Action<PacketSession, IMessage>> _handler = new Dictionary<ushort, Action<PacketSession, IMessage>>();
+		
+	public void Register()
+	{		
+		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
+		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);
+	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
 	{
@@ -33,7 +36,7 @@ public class PacketManager
 
 		Action<PacketSession, ArraySegment<byte>, ushort> action = null;
 		if (_onRecv.TryGetValue(id, out action))
-			action(session, buffer, id);
+			action.Invoke(session, buffer, id);
 	}
 
 	void MakePacket<T>(PacketSession session, ArraySegment<byte> buffer, ushort id) where T : IMessage, new()
@@ -42,13 +45,14 @@ public class PacketManager
 		pkt.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
 		Action<PacketSession, IMessage> action = null;
 		if (_handler.TryGetValue(id, out action))
-			action(session, pkt);
+			action.Invoke(session, pkt);
 	}
 
-	public Action<PacketSession, IMessage> GetPacketHandler(ushort id) {
+	public Action<PacketSession, IMessage> GetPacketHandler(ushort id)
+	{
 		Action<PacketSession, IMessage> action = null;
-		if (_handler.TryGetValue(id, out action)) return action;
+		if (_handler.TryGetValue(id, out action))
+			return action;
 		return null;
 	}
-
 }

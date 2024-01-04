@@ -8,18 +8,20 @@ using ServerCore;
 using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
+using Server.Game;
 
 namespace Server
 {
-	class ClientSession : PacketSession
+	public class ClientSession : PacketSession
     {
+        public Player MyPlayer { get; set; }
         public int sessionID { get; set; }
 
         public void Send(IMessage packet)
         {
             ushort size = (ushort)packet.CalculateSize();
             byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+            Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
 
             string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
             MsgId msgID = (MsgId)Enum.Parse(typeof(MsgId), msgName);
@@ -34,16 +36,21 @@ namespace Server
         {
             Console.WriteLine($"Onconnected : {endPoint}");
 
-            S_Chat chat = new S_Chat()
+            MyPlayer = PlayerManager.Instance.Add();
             {
-                Context = "안녕하세요"
-            };
+                MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerID}";
+                MyPlayer.Info.PosX = 0;
+                MyPlayer.Info.PosY = 0;
+                MyPlayer.Session = this;
+            }
 
-            Send(chat);
+            RoomManager.Instance.Find(1).EnterGame(MyPlayer);
+
         }
 
         public override void OnDisconnected(EndPoint endPoint)
         {
+            RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.PlayerID);
             SessionManager.Inst.Remove(this);
 
             Console.WriteLine($"OnDisconnected : {endPoint}");
@@ -52,7 +59,7 @@ namespace Server
         public override void OnRecvPacket(ArraySegment<byte> buffer)
         {
             Console.WriteLine("OnRecvPacket");
-            PacketManager.Inst.OnRecvPacket(this, buffer);            
+            PacketManager.Instance.OnRecvPacket(this, buffer);            
         }
 
         public override void OnSend(int numOfBytes)
