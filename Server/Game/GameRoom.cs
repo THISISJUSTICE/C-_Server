@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 
 namespace Server.Game
@@ -42,7 +43,8 @@ namespace Server.Game
                     S_Spawn spawnPacket = new S_Spawn();
                     spawnPacket.Player.Add(newPlayer.Info);
                     foreach (Player p in _players) {
-                        p.Session.Send(spawnPacket);
+                        if (newPlayer != p)
+                            p.Session.Send(spawnPacket);
                     }
                 }
             }
@@ -70,8 +72,17 @@ namespace Server.Game
                     foreach (Player p in _players)
                     {
                         if(player != p)
-                        p.Session.Send(despawnPacket);
+                            p.Session.Send(despawnPacket);
                     }
+                }
+            }
+        }
+
+        public void BroadCast(IMessage packet, int id = -1) {
+            lock (_lock) {
+                foreach (Player p in _players) {
+                    if(p.Info.PlayerID != id)
+                        p.Session.Send(packet);
                 }
             }
         }
