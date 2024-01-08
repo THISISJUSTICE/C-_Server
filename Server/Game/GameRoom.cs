@@ -78,11 +78,50 @@ namespace Server.Game
             }
         }
 
-        public void BroadCast(IMessage packet, int id = -1) {
+        public void HandleMove(Player player, C_Move movePacket)
+        { 
+            if (player == null) return;
+
+            lock (_lock){
+                //TODO : 검증
+
+                PlayerInfo info = player.Info;
+                info.PosInfo = movePacket.PosInfo;
+
+                //다른 플레이어에게 브로드캐스팅
+                S_Move resMovePacket = new S_Move();
+                resMovePacket.PlayerID = player.Info.PlayerID;
+                resMovePacket.PosInfo = movePacket.PosInfo;
+
+                BroadCast(resMovePacket);
+            }
+        }
+
+        public void HandleSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null) return;
+
+            lock (_lock) {
+                PlayerInfo info = player.Info;
+                if (info.PosInfo.State != CreatureState.Idle) return;
+
+                //TODO: 스킬 사용 가능 여부 체크
+
+                //통과
+                info.PosInfo.State = CreatureState.Skill;
+                S_Skill skill = new S_Skill() { Info = new SkillInfo() };
+                skill.PlayerID = info.PlayerID;
+                skill.Info.SkillID = 1;
+                BroadCast(skill);
+
+                //TODO: 데미지 판정
+            }
+        }
+
+        public void BroadCast(IMessage packet) {
             lock (_lock) {
                 foreach (Player p in _players) {
-                    if(p.Info.PlayerID != id)
-                        p.Session.Send(packet);
+                    p.Session.Send(packet);
                 }
             }
         }
