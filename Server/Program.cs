@@ -2,6 +2,7 @@
 using System.Net;
 using ServerCore;
 using Server.Game;
+using System.Threading;
 
 namespace Server
 {
@@ -24,11 +25,14 @@ namespace Server
 
             _listener.Init(endPoint, () => { return SessionManager.Inst.Generate(); });
 
-            JobTimer.Inst.Push(FlushRoom);
+            //JobTimer.Inst.Push(FlushRoom);
 
             while (true)
             {
-                JobTimer.Inst.Flush();
+                //JobTimer.Inst.Flush();
+                RoomManager.Instance.Find(1).Update();
+
+                Thread.Sleep(100);
             }
         }
 

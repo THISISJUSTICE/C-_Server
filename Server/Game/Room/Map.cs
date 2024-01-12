@@ -57,7 +57,7 @@ namespace Server.Game
 		public int SizeY { get { return MaxY - MinY + 1; } }
 
 		bool[,] _collision;
-		Player[,] _players;
+		GameObject[,] _objects;
 
 		public bool CanGo(Vector2Int cellPos, bool checkObjects = true)
 		{
@@ -66,39 +66,46 @@ namespace Server.Game
 
 			int x = cellPos.x - MinX;
 			int y = MaxY - cellPos.y;
-			return !_collision[y, x] && (!checkObjects || _players[y,x] == null);
+			return !_collision[y, x] && (!checkObjects || _objects[y,x] == null);
 		}
 
-		public Player Find(Vector2Int cellPos)
+		public GameObject Find(Vector2Int cellPos)
 		{
 			if (cellPos.x < MinX || cellPos.x > MaxX) return null;
 			if (cellPos.y < MinY || cellPos.y > MaxY) return null;
 
 			int x = cellPos.x - MinX;
 			int y = MaxY - cellPos.y;
-			return _players[y, x];
+			return _objects[y, x];
 		}
 
-		public bool ApplyMove(Player player, Vector2Int dest)
-		{
-			PositionInfo posInfo = player.Info.PosInfo;
+		public bool ApplyLeave(GameObject gameObject) {
+			PositionInfo posInfo = gameObject.Info.PosInfo;
 			if (posInfo.PosX < MinX || posInfo.PosX > MaxX) return false;
 			if (posInfo.PosY < MinY || posInfo.PosY > MaxY) return false;
-			if (CanGo(dest, true) == false) return false;
 
 			//기존 위치 삭제
 			{
 				int x = posInfo.PosX - MinX;
 				int y = MaxY - posInfo.PosY;
-				if(_players[y, x] == player)
-					_players[y, x] = null;
+				if (_objects[y, x] == gameObject)
+					_objects[y, x] = null;
 			}
+
+			return true;
+		}
+
+		public bool ApplyMove(GameObject gameObject, Vector2Int dest)
+		{
+			ApplyLeave(gameObject);
+			PositionInfo posInfo = gameObject.Info.PosInfo;
+			if (CanGo(dest, true) == false) return false;
 
 			//새로운 위치 적용
 			{
 				int x = dest.x - MinX;
 				int y = MaxY - dest.y;
-				_players[y, x] = player;
+				_objects[y, x] = gameObject;
 			}
 
 			posInfo.PosX = dest.x;
@@ -122,7 +129,7 @@ namespace Server.Game
 			int yCount = MaxY - MinY + 1;
 
 			_collision = new bool[yCount, xCount];
-			_players = new Player[yCount, xCount];
+			_objects = new GameObject[yCount, xCount];
 
 			for (int y = 0; y < yCount; y++)
 			{
