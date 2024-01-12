@@ -13,13 +13,19 @@ namespace Server.Game
         object _lock = new object();
         public int RoomID { get; set; }
 
-        List<Player> _players = new List<Player>();
+        Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        Map _map = new Map();
+
+        public void Init(int mapID)
+        {
+            _map.LoadMap(mapID);
+        }
 
         public void EnterGame(Player newPlayer) {
             if (newPlayer == null) return;
 
             lock(_lock){
-                _players.Add(newPlayer);
+                _players.Add(newPlayer.Info.PlayerID, newPlayer);
                 newPlayer.Room = this;
 
                 //본인한테 정보 전송
@@ -29,7 +35,7 @@ namespace Server.Game
                     newPlayer.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players) {
+                    foreach (Player p in _players.Values) {
                         if (newPlayer != p) {
                             spawnPacket.Player.Add(p.Info);
                         }
@@ -42,7 +48,7 @@ namespace Server.Game
                 {
                     S_Spawn spawnPacket = new S_Spawn();
                     spawnPacket.Player.Add(newPlayer.Info);
-                    foreach (Player p in _players) {
+                    foreach (Player p in _players.Values) {
                         if (newPlayer != p)
                             p.Session.Send(spawnPacket);
                     }
@@ -53,10 +59,11 @@ namespace Server.Game
 
         public void LeaveGame(int playerID) {
             lock (_lock) {
-                Player player = _players.Find(p => p.Info.PlayerID == playerID);
-                if (player == null) return;
+                Player player = null;
+                if (_players.Remove(playerID, out player) == false) {
+                    return;
+                }
 
-                _players.Remove(player);
                 player.Room = null;
 
                 //본인한테 정보 전송
@@ -69,7 +76,7 @@ namespace Server.Game
                 {
                     S_Despawn despawnPacket = new S_Despawn();
                     despawnPacket.PlayerID.Add(player.Info.PlayerID);
-                    foreach (Player p in _players)
+                    foreach (Player p in _players.Values)
                     {
                         if(player != p)
                             p.Session.Send(despawnPacket);
@@ -85,13 +92,25 @@ namespace Server.Game
             lock (_lock){
                 //TODO : 검증
 
+                //일단 서버에서 좌표 이동
+                PositionInfo movePosInfo = movePacket.PosInfo;
                 PlayerInfo info = player.Info;
-                info.PosInfo = movePacket.PosInfo;
+
+                //다른 좌표로 이동할 경우, 갈 수 있는지 체크
+                if (movePosInfo.PosX != info.PosInfo.PosX || movePosInfo.PosY != info.PosInfo.PosY) {
+                    if (_map.CanGo(new Vector2Int(movePosInfo.PosX, movePosInfo.PosY)) == false) {
+                        return;
+                    }
+                }
+
+                info.PosInfo.State = movePosInfo.State;
+                info.PosInfo.MoveDir = movePosInfo.MoveDir;
 
                 //다른 플레이어에게 브로드캐스팅
                 S_Move resMovePacket = new S_Move();
                 resMovePacket.PlayerID = player.Info.PlayerID;
-                resMovePacket.PosInfo = movePacket.PosInfo;
+                resMovePacket.PosInfo = info.PosInfo;
+                _map.ApplyMove(player, new Vector2Int(movePosInfo.PosX, movePosInfo.PosY));
 
                 BroadCast(resMovePacket);
             }
@@ -115,12 +134,17 @@ namespace Server.Game
                 BroadCast(skill);
 
                 //TODO: 데미지 판정
+                Vector2Int skillPos = player.GetFrontPos(info.PosInfo.MoveDir);
+                Player target = _map.Find(skillPos);
+                if (target != null) {
+                    Console.WriteLine("Hit Player");
+                }
             }
         }
 
         public void BroadCast(IMessage packet) {
             lock (_lock) {
-                foreach (Player p in _players) {
+                foreach (Player p in _players.Values) {
                     p.Session.Send(packet);
                 }
             }
