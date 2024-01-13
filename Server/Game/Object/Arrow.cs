@@ -30,12 +30,14 @@ namespace Server.Game
                 movePacket.ObejctID = id;
                 movePacket.PosInfo = PosInfo;
                 Room.BroadCast(movePacket);
-                Console.WriteLine("Move Arrow");
             }
             else {
                 GameObject target = Room.Map.Find(destPos);
-                if (target != null) { 
+                if (target != null) {
                     //TODO: 피격 판정
+                    target.OnDamaged(this, Data.damage);
+                    Console.WriteLine($"{target.Info.Name} 피격, damage: {Data.damage}");
+                    
                 }
 
                 //소멸
