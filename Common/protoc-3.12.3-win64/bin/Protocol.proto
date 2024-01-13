@@ -34,7 +34,12 @@ enum GameObjectType{
 	PLAYER = 1;
 	MONSTER = 2;
 	PROJECTILE = 3;
+}
 
+enum SkillType{
+	SKILL_NONE = 0;
+	SKILL_AUTO = 1;
+	SKILL_PROJECTILE = 2;
 }
 
 message S_EnterGame {

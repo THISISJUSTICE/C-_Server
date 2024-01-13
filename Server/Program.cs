@@ -3,6 +3,7 @@ using System.Net;
 using ServerCore;
 using Server.Game;
 using System.Threading;
+using Server.Data;
 
 namespace Server
 {
@@ -15,6 +16,11 @@ namespace Server
         }
         static void Main(string[] args)
         {
+            ConfigManager.LoadConfig();
+            DataManager.LoadData();
+
+            var d = DataManager.StatDict;
+
             RoomManager.Instance.Add(1);
 
             //DNS
@@ -32,7 +38,7 @@ namespace Server
                 //JobTimer.Inst.Flush();
                 RoomManager.Instance.Find(1).Update();
 
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
             }
         }
 
