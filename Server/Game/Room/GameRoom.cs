@@ -136,7 +136,7 @@ namespace Server.Game
                 //타인한테 정보 전송
                 {
                     S_Despawn despawnPacket = new S_Despawn();
-                    despawnPacket.ObejctIDs.Add(objectID);
+                    despawnPacket.ObjectIDs.Add(objectID);
                     foreach (Player p in _players.Values)
                     {
                         if(p.id != objectID)
@@ -169,7 +169,7 @@ namespace Server.Game
 
                 //다른 플레이어에게 브로드캐스팅
                 S_Move resMovePacket = new S_Move();
-                resMovePacket.ObejctID = player.Info.ObjectID;
+                resMovePacket.ObjectID = player.Info.ObjectID;
                 resMovePacket.PosInfo = info.PosInfo;
                 Map.ApplyMove(player, new Vector2Int(movePosInfo.PosX, movePosInfo.PosY));
 
@@ -190,7 +190,7 @@ namespace Server.Game
                 //통과
                 info.PosInfo.State = CreatureState.Skill;
                 S_Skill skill = new S_Skill() { Info = new SkillInfo() };
-                skill.ObejctID = info.ObjectID;
+                skill.ObjectID = info.ObjectID;
                 skill.Info.SkillID = skillPacket.Info.SkillID;
                 BroadCast(skill);
 

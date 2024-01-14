@@ -13,6 +13,7 @@ enum MsgId {
   S_MOVE = 5;
   C_SKILL = 6;
   S_SKILL = 7;
+  S_CHANGE_HP = 8;
 }
 
 enum CreatureState{
@@ -55,7 +56,7 @@ message S_Spawn{
 }
 
 message S_Despawn{
-	repeated int32 obejctIDs = 1;
+	repeated int32 objectIDs = 1;
 }
 
 message C_Move{
@@ -63,7 +64,7 @@ message C_Move{
 }
 
 message S_Move{
-	int32 obejctID = 1;
+	int32 objectID = 1;
 	PositionInfo posInfo = 2;
 }
 
@@ -72,8 +73,13 @@ message C_Skill{
 }
 
 message S_Skill{
-	int32 obejctID = 1;
+	int32 objectID = 1;
 	SkillInfo info = 2;
+}
+
+message S_ChangeHp{
+	int32 objectID = 1;
+	int32 hp = 2;
 }
 
 message ObjectInfo{
@@ -91,9 +97,12 @@ message PositionInfo{
 }
 
 message StatInfo{
-	int32 hp = 1;
-	int32 maxHP = 2;
-	float speed = 3;
+	int32 level = 1;
+	int32 hp = 2;
+	int32 maxHP = 3;
+	int32 attack = 4;
+	float speed = 5;
+	int32 totalExp = 6;
 }
 
 message SkillInfo{
