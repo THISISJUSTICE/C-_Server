@@ -41,7 +41,7 @@ namespace Server.Game
                 }
 
                 //소멸
-                Room.LeaveGame(id);
+                Room.Push(Room.LeaveGame, id);
             }
         }
 

@@ -51,13 +51,15 @@ namespace Server
                 MyPlayer.Stat.MergeFrom(stat);
             }
 
-            RoomManager.Instance.Find(1).EnterGame(MyPlayer);
+            GameRoom room = RoomManager.Instance.Find(1);
+            room.Push(room.EnterGame, MyPlayer);
 
         }
 
         public override void OnDisconnected(EndPoint endPoint)
         {
-            RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.ObjectID);
+            GameRoom room = RoomManager.Instance.Find(1);
+            room.Push(room.LeaveGame, MyPlayer.Info.ObjectID);
             SessionManager.Inst.Remove(this);
 
             Console.WriteLine($"OnDisconnected : {endPoint}");

@@ -17,7 +17,7 @@ namespace Server.Game
 
         public GameRoom Add(int mapID) {
             GameRoom gameRoom = new GameRoom();
-            gameRoom.Init(mapID);
+            gameRoom.Push(gameRoom.Init, mapID);
 
             lock (_lock) {
                 gameRoom.RoomID = _roomID;
