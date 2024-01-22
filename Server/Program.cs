@@ -4,16 +4,25 @@ using ServerCore;
 using Server.Game;
 using System.Threading;
 using Server.Data;
+using System.Collections.Generic;
 
 namespace Server
 {
     class Program
     {
         static Listener _listener = new Listener();
+        static List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
 
-        static void FlushRoom() {
-            JobTimer.Inst.Push(FlushRoom, 250);
+        static void TickRoom(GameRoom room, int tick = 100) {
+            var timer = new System.Timers.Timer();
+            timer.Interval = tick;
+            timer.Elapsed += ((s, e) => { room.Update(); } );
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            _timers.Add(timer);
         }
+
         static void Main(string[] args)
         {
             ConfigManager.LoadConfig();
@@ -21,7 +30,8 @@ namespace Server
 
             var d = DataManager.StatDict;
 
-            RoomManager.Instance.Add(1);
+            GameRoom room = RoomManager.Instance.Add(1);
+            TickRoom(room, 50);
 
             //DNS
             string host = Dns.GetHostName();
@@ -36,9 +46,6 @@ namespace Server
             while (true)
             {
                 //JobTimer.Inst.Flush();
-                GameRoom room = RoomManager.Instance.Find(1);
-                room.Push(room.Update);
-
                 Thread.Sleep(100);
             }
         }
