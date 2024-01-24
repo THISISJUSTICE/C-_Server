@@ -17,8 +17,8 @@ class PacketHandler
 		C_Move movePacket = packet as C_Move;
 		ClientSession clientSession = session as ClientSession;
 
-		Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY}," +
-			$" Dir: {movePacket.PosInfo.MoveDir}, State: {movePacket.PosInfo.State})");
+		/*Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY}," +
+			$" Dir: {movePacket.PosInfo.MoveDir}, State: {movePacket.PosInfo.State})");*/
 
 		Player player = clientSession.MyPlayer;
 		if (player == null) return;

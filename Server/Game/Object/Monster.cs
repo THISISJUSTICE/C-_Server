@@ -14,6 +14,7 @@ namespace Server.Game
             ObjectType = GameObjectType.Monster;
 
             //TEMP
+            Info.Name = "Monster";
             Stat.Level = 1;
             Stat.MaxHP = 100;
             Stat.Hp = Stat.MaxHP;
