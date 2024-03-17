@@ -5,6 +5,7 @@ using Server.Game;
 using System.Threading;
 using Server.Data;
 using System.Collections.Generic;
+using Server.DB;
 
 namespace Server
 {
@@ -28,7 +29,11 @@ namespace Server
             ConfigManager.LoadConfig();
             DataManager.LoadData();
 
-            var d = DataManager.StatDict;
+            // DB Test
+            using (AppDbContext db = new AppDbContext()) {
+                db.Accounts.Add(new AccountDb() {AccountName = "TestAccount" });
+                db.SaveChanges();
+            }
 
             GameRoom room = RoomManager.Instance.Add(1);
             TickRoom(room, 50);

@@ -10,6 +10,7 @@ namespace Server.Data
     [Serializable]
     public class ServerConfig {
         public string dataPath;
+        public string connectionString;
     }
 
     class ConfigManager
