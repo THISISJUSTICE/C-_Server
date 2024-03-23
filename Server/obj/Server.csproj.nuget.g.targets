@@ -19,6 +19,5 @@
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.configuration\8.0.0\buildTransitive\netcoreapp2.0\Microsoft.Extensions.Configuration.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.configuration\8.0.0\buildTransitive\netcoreapp2.0\Microsoft.Extensions.Configuration.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.logging.configuration\8.0.0\buildTransitive\netcoreapp2.0\Microsoft.Extensions.Logging.Configuration.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.logging.configuration\8.0.0\buildTransitive\netcoreapp2.0\Microsoft.Extensions.Logging.Configuration.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.logging.console\8.0.0\buildTransitive\netcoreapp2.0\Microsoft.Extensions.Logging.Console.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.logging.console\8.0.0\buildTransitive\netcoreapp2.0\Microsoft.Extensions.Logging.Console.targets')" />
-    <Import Project="$(NuGetPackageRoot)entityframework\6.4.4\buildTransitive\netcoreapp3.0\EntityFramework.targets" Condition="Exists('$(NuGetPackageRoot)entityframework\6.4.4\buildTransitive\netcoreapp3.0\EntityFramework.targets')" />
   </ImportGroup>
 </Project>

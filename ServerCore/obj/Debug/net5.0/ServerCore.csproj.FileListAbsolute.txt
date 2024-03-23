@@ -28,3 +28,4 @@ C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.pdb
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.runtimeconfig.json
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\bin\Debug\net5.0\ServerCore.runtimeconfig.dev.json
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.genruntimeconfig.cache
+C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.csproj.AssemblyReference.cache
