@@ -14,7 +14,6 @@ C:\Users\yulop\UnityProject\Server\ServerCore\obj\Debug\net5.0\ref\ServerCore.dl
 C:\Users\yulop\UnityProject\Server\ServerCore\obj\Debug\net5.0\ServerCore.pdb
 C:\Users\yulop\UnityProject\Server\ServerCore\obj\Debug\net5.0\ServerCore.genruntimeconfig.cache
 C:\Users\yulop\UnityProject\Server\ServerCore\obj\Debug\net5.0\ServerCore.csproj.AssemblyReference.cache
-C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.csproj.AssemblyReference.cache
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.AssemblyInfoInputs.cache
 C:\Users\yulop\UnityProject\C-_Server\ServerCore\obj\Debug\net5.0\ServerCore.AssemblyInfo.cs
