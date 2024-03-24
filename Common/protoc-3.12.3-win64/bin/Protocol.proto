@@ -117,7 +117,7 @@ message C_CreatePlayer{
 	string name = 1;
 }
 
-message S_CreaterPlayer{
+message S_CreatePlayer{
 	LobbyPlayerInfo player = 1;
 }
 

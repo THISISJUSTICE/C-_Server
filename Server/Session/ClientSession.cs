@@ -44,26 +44,6 @@ namespace Server
                 S_Connected connectedPacket = new S_Connected();
                 Send(connectedPacket);
             }
-
-            //TODO: 로비에서 캐릭터 선택
-            MyPlayer = ObjectManager.Instance.Add<Player>();
-            {
-                MyPlayer.Info.Name = $"Player_{MyPlayer.Info.ObjectID}";
-                MyPlayer.Info.PosInfo.State = CreatureState.Idle;
-                MyPlayer.Info.PosInfo.MoveDir = MoveDir.Down;
-                MyPlayer.Info.PosInfo.PosX = 0;
-                MyPlayer.Info.PosInfo.PosY = 0;
-
-                MyPlayer.Session = this;
-                StatInfo stat = null;
-                DataManager.StatDict.TryGetValue(1, out stat);
-                MyPlayer.Stat.MergeFrom(stat);
-            }
-
-            // TODO: 입장 요청이 들어오면
-            GameRoom room = RoomManager.Instance.Find(1);
-            room.Push(room.EnterGame, MyPlayer);
-
         }
 
         public override void OnDisconnected(EndPoint endPoint)
