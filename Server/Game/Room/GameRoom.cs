@@ -118,6 +118,7 @@ namespace Server.Game
                     return;
                 }
 
+                player.OnLeaveGame();
                 Map.ApplyLeave(player);
                 player.Room = null;
 

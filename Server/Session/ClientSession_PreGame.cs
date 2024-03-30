@@ -38,7 +38,8 @@ namespace Server
 
 					S_Login loginOk = new S_Login() { LoginOk = 1 };
 					foreach (PlayerDb playerDb in findAccount.Players) {
-						LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo() { 
+						LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo() {
+							PlayerDbId = playerDb.PlayerDbId,
 							Name = playerDb.PlayerName,
 							StatInfo = new StatInfo() { 
 								Level = playerDb.Level,
@@ -64,7 +65,13 @@ namespace Server
 				{
 					AccountDb newAccount = new AccountDb() { AccountName = loginPacket.UniqueID };
 					db.Accounts.Add(newAccount);
-					db.SaveChanges(); // TODO: Exception
+
+					bool success = db.SaveChangesEx();
+					if (success == false)
+					{
+						return;
+					}
+
 					// AccountDbId 메모리에 할당
 					AccountDbId = findAccount.AccountDbId;
 
@@ -83,6 +90,7 @@ namespace Server
 
 			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
+				MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
 				MyPlayer.Info.Name = playerInfo.Name;
 				MyPlayer.Info.PosInfo.State = CreatureState.Idle;
 				MyPlayer.Info.PosInfo.MoveDir = MoveDir.Down;
@@ -131,11 +139,16 @@ namespace Server
 					};
 
 					db.Players.Add(newPlayerDb);
-					db.SaveChanges(); // TODO: Excpetion Handling
+
+					bool success = db.SaveChangesEx();
+					if (success == false) {
+						return;
+					}
 
 					// 메모리에 할당
 					LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
 					{
+						PlayerDbId = newPlayerDb.PlayerDbId,
 						Name = createPacket.Name,
 						StatInfo = new StatInfo()
 						{
