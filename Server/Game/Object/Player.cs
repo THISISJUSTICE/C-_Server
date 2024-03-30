@@ -35,17 +35,11 @@ namespace Server.Game
             // 부하를 줄여야 함
             // 1) 서버가 다운되면 저장되지 않은 정보 소실
             // 2) 코드 흐름을 다 막아버림 (멀티 스레드 환경에서 시간 소모)
-            using (AppDbContext db = new AppDbContext())
-            {
-                PlayerDb playerDb = new PlayerDb();
-                playerDb.PlayerDbId = PlayerDbId;
-                playerDb.Hp = Stat.Hp;
-
-                // Find로 찾는 것 보다 DB 접근 횟수가 줄어듦
-                db.Entry(playerDb).State = EntityState.Unchanged;
-                db.Entry(playerDb).Property(nameof(PlayerDb.Hp)).IsModified = true;
-                db.SaveChangesEx();
-            }
+            // - 비동기 방법
+            // - 다른 쓰레드로 DB 처리
+            // -- 결과를 받아서 이어서 처리를 해야하는 경우가 많음 ( Ex)아이템 생성 )
+            //DBTransaction.SavePlayerStatus_AllInOne(this, Room);
+            DBTransaction.SavePlayerStatus_Step1(this, Room);
         }
 
     }
