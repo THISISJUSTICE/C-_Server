@@ -106,10 +106,15 @@ namespace Server
 						.Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
 						.ToList();
 
-					foreach (ItemDb item in items) {
-						// TODO: 인벤토리
-						ItemInfo info = new ItemInfo();
-						itemListPacket.Items.Add(info);
+					foreach (ItemDb itemDb in items) {
+						Item item = Item.MakeItem(itemDb);
+						if (item != null) {
+							MyPlayer.Inven.Add(item);
+							ItemInfo info = new ItemInfo();
+							info.MergeFrom(item.info);
+							itemListPacket.Items.Add(info);
+						}
+						
 					}					
 				}
 

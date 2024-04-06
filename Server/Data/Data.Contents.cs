@@ -95,17 +95,17 @@ namespace Server.Data
 		{
 			Dictionary<int, ItemData> dict = new Dictionary<int, ItemData>();
 			foreach (ItemData item in weapons) {
-				item.itemType = ItemType.ItempTypeWeapon;
+				item.itemType = ItemType.Weapon;
 				dict.Add(item.id, item);
 			}
 			foreach (ItemData item in armors)
 			{
-				item.itemType = ItemType.ItempTypeArmor;
+				item.itemType = ItemType.Armor;
 				dict.Add(item.id, item);
 			}
 			foreach (ItemData item in consumables)
 			{
-				item.itemType = ItemType.ItempTypeConsumable;
+				item.itemType = ItemType.Consumable;
 				dict.Add(item.id, item);
 			}
 
